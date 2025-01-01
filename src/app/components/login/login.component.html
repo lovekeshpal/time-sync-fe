@@ -4,12 +4,12 @@
         <div class="mb-4">
             <label for="email" class="block text-sm font-medium text-text dark:text-text-light">Email</label>
             <input type="email" id="email" name="email" ngModel required
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                class="mt-1 block w-full px-3 py-2 border border-input-border-light dark:border-input-border-dark rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-input-light dark:bg-input-dark text-input-text-light dark:text-input-text-dark">
         </div>
         <div class="mb-4">
             <label for="password" class="block text-sm font-medium text-text dark:text-text-light">Password</label>
             <input type="password" id="password" name="password" ngModel required
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                class="mt-1 block w-full px-3 py-2 border border-input-border-light dark:border-input-border-dark rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-input-light dark:bg-input-dark text-input-text-light dark:text-input-text-dark">
         </div>
         <div class="flex items-center justify-between">
             <button type="submit"
@@ -18,4 +18,8 @@
             </button>
         </div>
     </form>
+    <p class="mt-4 text-center text-sm text-text dark:text-text-light">
+        Don't have an account?
+        <a href="/sign-up" class="text-primary dark:text-primary-dark hover:underline">Register here</a>
+    </p>
 </div>
