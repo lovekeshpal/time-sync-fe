@@ -1,16 +1,17 @@
-<div class="flex flex-col min-h-screen" style="background-color: var(--bg-color);">
-    <header class="p-4 flex justify-between items-center border-b-1"
-        style="background-color: var(--bg-color); color: var(--text-color-light);">
-        <h1 class="text-xl" style="color: var(--text-color);">Time Sync</h1>
-        <button (click)="toggleTheme()" style="color: var(--text-color);">
-            <i class="bi bi-moon-fill dark:hidden" style="color: var(--text-color);"></i>
-            <i class="bi bi-sun-fill hidden dark:inline" style="color: var(--text-color);"></i>
+<div class="flex flex-col min-h-screen bg-bg-light dark:bg-bg-dark">
+    <header
+        class="p-4 flex justify-between items-center border-b border-gray-300 dark:border-gray-700 bg-bg-light dark:bg-bg-dark text-text-light dark:text-text">
+        <h1 class="text-l sm:text-l md:text-xl lg:text-2xl text-text dark:text-text-light">Time Sync</h1>
+        <button (click)="toggleTheme()" class="text-text dark:text-text-light">
+            <i class="bi bi-moon-fill dark:hidden text-text dark:text-text-light"></i>
+            <i class="bi bi-sun-fill hidden dark:inline text-text dark:text-text-light"></i>
         </button>
     </header>
-    <main class="flex-grow">
+    <main class="flex-grow p-4 sm:p-6 md:p-8 lg:p-10">
         <router-outlet></router-outlet>
     </main>
-    <footer class="p-2 text-center" style="background-color: var(--bg-color); color: var(--text-color);">
+    <footer
+        class="text-l p-1 sm:p-1 md:p-2 lg:p-4 text-center bg-bg-light dark:bg-bg-dark text-text dark:text-text-light">
         &copy; Time Sync 2024
     </footer>
 </div>
