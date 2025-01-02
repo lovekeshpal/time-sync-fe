@@ -2,6 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+/**
+ * SignUpComponent is responsible for handling the sign-up form functionality.
+ * It initializes the form with validation rules and handles form submission.
+ */
 @Component({
   selector: 'app-sign-up',
   imports: [CommonModule, ReactiveFormsModule],
@@ -9,10 +13,19 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
   styleUrl: './sign-up.component.scss'
 })
 export class SignUpComponent implements OnInit {
+  /**
+   * The FormGroup instance for the sign-up form.
+   */
   signUpForm!: FormGroup;
 
+  /**
+   * The FormBuilder instance used to create the form controls.
+   */
   private formBuilder = inject(FormBuilder);
 
+  /**
+   * Initializes the sign-up form with validation rules.
+   */
   ngOnInit(): void {
     this.signUpForm = this.formBuilder.group({
       username: ['', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(20)])],
@@ -21,6 +34,10 @@ export class SignUpComponent implements OnInit {
     });
   }
 
+  /**
+   * Handles the form submission. If the form is valid, it logs the form values.
+   * Otherwise, it marks all form controls as touched to display validation errors.
+   */
   onSubmit() {
     if (this.signUpForm.valid) {
       console.log('Form Submitted', this.signUpForm.value);
@@ -29,6 +46,12 @@ export class SignUpComponent implements OnInit {
     }
   }
 
+  /**
+   * Recursively marks all controls in a FormGroup as touched.
+   * This is used to trigger validation messages for all controls.
+   * 
+   * @param formGroup - The FormGroup to mark as touched.
+   */
   private markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach(control => {
       control.markAsTouched();
