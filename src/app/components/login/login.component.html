@@ -1,15 +1,28 @@
 <div class="max-w-md mx-auto mt-10 p-6 bg-bg-light dark:bg-bg-dark rounded-lg shadow-md">
     <h2 class="text-2xl font-bold mb-6 text-center text-text dark:text-text-light">Login</h2>
-    <form>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="mb-4">
-            <label for="email" class="block text-sm font-medium text-text dark:text-text-light">Email</label>
-            <input type="email" id="email" name="email" ngModel required
+            <label for="emailOrUsername" class="block text-sm font-medium text-text dark:text-text-light">Email or
+                Username</label>
+            <input formControlName="emailOrUsername" type="text" id="emailOrUsername" required
                 class="mt-1 block w-full px-3 py-2 border border-input-border-light dark:border-input-border-dark rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-input-light dark:bg-input-dark text-input-text-light dark:text-input-text-dark">
+            <div *ngIf="loginForm.get('emailOrUsername')?.invalid && loginForm.get('emailOrUsername')?.touched"
+                class="text-red-500 text-sm">
+                <div *ngIf="loginForm.get('emailOrUsername')?.errors?.['required']">Email or Username is required.</div>
+            </div>
         </div>
         <div class="mb-4">
             <label for="password" class="block text-sm font-medium text-text dark:text-text-light">Password</label>
-            <input type="password" id="password" name="password" ngModel required
+            <input formControlName="password" type="password" id="password" required
                 class="mt-1 block w-full px-3 py-2 border border-input-border-light dark:border-input-border-dark rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-input-light dark:bg-input-dark text-input-text-light dark:text-input-text-dark">
+            <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                class="text-red-500 text-sm">
+                <div *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</div>
+                <div *ngIf="loginForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters
+                    long.</div>
+                <div *ngIf="loginForm.get('password')?.errors?.['maxlength']">Password cannot be more than 20 characters
+                    long.</div>
+            </div>
         </div>
         <div class="flex items-center justify-between">
             <button type="submit"

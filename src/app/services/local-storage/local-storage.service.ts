@@ -7,20 +7,41 @@ export class LocalStorageService {
 
   constructor() { }
 
+  private isLocalStorageAvailable(): boolean {
+    return typeof localStorage !== 'undefined';
+  }
+
   setItem(key: string, value: any): void {
-    localStorage.setItem(key, JSON.stringify(value));
+    if (this.isLocalStorageAvailable()) {
+      localStorage.setItem(key, JSON.stringify(value));
+    } else {
+      console.warn('localStorage is not available');
+    }
   }
 
   getItem(key: string): any {
-    const value = localStorage.getItem(key);
-    return value ? JSON.parse(value) : null;
+    if (this.isLocalStorageAvailable()) {
+      const value = localStorage.getItem(key);
+      return value ? JSON.parse(value) : null;
+    } else {
+      console.warn('localStorage is not available');
+      return null;
+    }
   }
 
   removeItem(key: string): void {
-    localStorage.removeItem(key);
+    if (this.isLocalStorageAvailable()) {
+      localStorage.removeItem(key);
+    } else {
+      console.warn('localStorage is not available');
+    }
   }
 
   clear(): void {
-    localStorage.clear();
+    if (this.isLocalStorageAvailable()) {
+      localStorage.clear();
+    } else {
+      console.warn('localStorage is not available');
+    }
   }
 }

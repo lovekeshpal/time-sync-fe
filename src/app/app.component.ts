@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding, inject, Inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { LocalStorageService } from './services/local-storage/local-storage.service';
 
@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
 
   @HostBinding('class') className = '';
 
-  constructor(private localStorageService: LocalStorageService) { }
+  private localStorageService = inject(LocalStorageService);
 
   ngOnInit() {
     const savedTheme = this.localStorageService.getItem('theme');
