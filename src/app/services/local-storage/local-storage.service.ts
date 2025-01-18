@@ -1,47 +1,50 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocalStorageService {
+  private isBrowser: boolean;
 
-  constructor() { }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
-  private isLocalStorageAvailable(): boolean {
-    return typeof localStorage !== 'undefined';
+  keyExists(key: string): boolean {
+    if (this.isBrowser) {
+      return localStorage.getItem(key) !== null;
+    }
+    return false;
   }
 
   setItem(key: string, value: any): void {
-    if (this.isLocalStorageAvailable()) {
+    if (this.isBrowser) {
       localStorage.setItem(key, JSON.stringify(value));
-    } else {
-      console.warn('localStorage is not available');
     }
   }
 
   getItem(key: string): any {
-    if (this.isLocalStorageAvailable()) {
+    if (this.isBrowser && this.keyExists(key)) {
       const value = localStorage.getItem(key);
       return value ? JSON.parse(value) : null;
     } else {
-      console.warn('localStorage is not available');
+      console.warn(`Key: "${key}" does not exist`);
       return null;
     }
   }
 
   removeItem(key: string): void {
-    if (this.isLocalStorageAvailable()) {
+    if (this.isBrowser && this.keyExists(key)) {
       localStorage.removeItem(key);
     } else {
-      console.warn('localStorage is not available');
+      console.warn(`Key: "${key}" does not exist`);
     }
   }
 
   clear(): void {
-    if (this.isLocalStorageAvailable()) {
+    if (this.isBrowser) {
       localStorage.clear();
-    } else {
-      console.warn('localStorage is not available');
     }
   }
 }
