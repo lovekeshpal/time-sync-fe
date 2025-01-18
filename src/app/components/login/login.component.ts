@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, MinValidator, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth/auth.service';
+import { Router } from '@angular/router';
+import { HttpClientModule } from "@angular/common/http";
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -13,6 +16,8 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
 
   private formBuilder = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   /**
  * Initializes the login form with validation rules.
@@ -30,7 +35,21 @@ export class LoginComponent implements OnInit {
  */
   onSubmit() {
     if (this.loginForm.valid) {
-      console.log('Form Submitted', this.loginForm.value);
+      const { emailOrUsername, password } = this.loginForm.value;
+      this.authService.login(emailOrUsername, password).subscribe({
+        next: (response: any) => {
+          console.log('Login successful', response);
+          // Handle successful login, e.g., navigate to dashboard
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err: any) => {
+          console.error('Login failed', err);
+          // Handle login error, e.g., show error message
+        },
+        complete: () => {
+          console.log('Login process completed');
+        }
+      });
     } else {
       this.markFormGroupTouched(this.loginForm);
     }
