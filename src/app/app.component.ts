@@ -14,6 +14,7 @@ export class AppComponent implements OnInit {
   @HostBinding('class') className = '';
 
   private localStorageService = inject(LocalStorageService);
+  currentYear: number = new Date().getFullYear();
 
   ngOnInit() {
     const savedTheme = this.localStorageService.getItem('theme');
