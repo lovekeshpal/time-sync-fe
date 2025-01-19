@@ -10,6 +10,7 @@ import {
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 
 @Component({
   selector: 'app-login',
@@ -20,9 +21,12 @@ import { HttpClientModule } from '@angular/common/http';
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
 
+  isLoggingIn: boolean = false;
+
   private formBuilder = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private localStorageService = inject(LocalStorageService);
 
   /**
    * Initializes the login form with validation rules.
@@ -47,18 +51,29 @@ export class LoginComponent implements OnInit {
    */
   onSubmit() {
     if (this.loginForm.valid) {
+      this.isLoggingIn = true; // Start loading animation
       const { emailOrUsername, password } = this.loginForm.value;
       this.authService.login(emailOrUsername, password).subscribe({
-        next: (response: any) => {
+        next: async (response: any) => {
           console.log('Login successful', response);
           // Handle successful login, e.g., navigate to dashboard
-          this.router.navigate(['/dashboard']);
+          if (response.token) {
+            try {
+              await this.localStorageService.setItem('token', response.token);
+              this.router.navigate(['/dashboard']);
+            } catch (error) {
+              console.error('Failed to set token in local storage', error);
+            }
+          } else {
+            console.error('Token is missing in the response');
+          }
         },
         error: (err: any) => {
           console.error('Login failed', err);
           // Handle login error, e.g., show error message
         },
         complete: () => {
+          this.isLoggingIn = false; // Stop loading animation
           console.log('Login process completed');
         },
       });

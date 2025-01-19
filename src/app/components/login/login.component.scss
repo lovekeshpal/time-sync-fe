@@ -1,0 +1,16 @@
+.loader {
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: currentColor;
+    border-left-color: currentColor;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 50%;
+    width: 1rem;
+    height: 1rem;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
