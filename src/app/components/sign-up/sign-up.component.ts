@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
+import { LocalStorageService } from '../../services/local-storage/local-storage.service';
 
 /**
  * SignUpComponent is responsible for handling the sign-up form functionality.
@@ -25,8 +26,11 @@ export class SignUpComponent implements OnInit {
    */
   signUpForm!: FormGroup;
 
+  isSigningUp: boolean = false;
+
   private authService = inject(AuthService);
   private router = inject(Router);
+  private localStorageService = inject(LocalStorageService);
 
   /**
    * The FormBuilder instance used to create the form controls.
@@ -64,18 +68,41 @@ export class SignUpComponent implements OnInit {
    */
   onSubmit() {
     if (this.signUpForm.valid) {
+      this.isSigningUp = true; // Start loading animation
       const { username, email, password } = this.signUpForm.value;
       this.authService.signup(username, email, password).subscribe({
-        next: (response: any) => {
+        next: async (response: any) => {
           console.log('Sign-up successful', response);
-          // Handle successful sign-up, e.g., navigate to login page
-          this.router.navigate(['/login']);
+          // Handle successful sign-up, e.g., navigate to dashboard
+          if (response.token) {
+            try {
+              await this.localStorageService.setItem('token', response.token);
+              this.router.navigate(['/dashboard']);
+            } catch (error) {
+              console.error('Failed to set token in local storage', error);
+            }
+          } else {
+            console.error('Token is missing in the response');
+          }
         },
         error: (err: any) => {
           console.error('Sign-up failed', err);
           // Handle sign-up error, e.g., show error message
+          if (err.error.code && err.error.code === 1) {
+            this.signUpForm
+              .get('username')
+              ?.setErrors({ usernameExists: true });
+            this.isSigningUp = false;
+          } else if (err.error.code && err.error.code === 2) {
+            this.signUpForm.get('email')?.setErrors({ emailExists: true });
+            this.isSigningUp = false;
+          } else {
+            this.signUpForm.get('password')?.setErrors({ serverError: true });
+            this.isSigningUp = false;
+          }
         },
         complete: () => {
+          this.isSigningUp = false; // Stop loading animation
           console.log('Sign-up process completed');
         },
       });

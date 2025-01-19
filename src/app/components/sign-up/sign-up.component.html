@@ -12,6 +12,7 @@
                     long.</div>
                 <div *ngIf="signUpForm.get('username')?.errors?.['maxlength']">Username cannot be more than 20
                     characters long.</div>
+                <div *ngIf="signUpForm.get('username')?.errors?.['usernameExists']">Username already exists.</div>
             </div>
         </div>
         <div class="mb-4">
@@ -22,6 +23,8 @@
                 class="text-red-500 text-sm">
                 <div *ngIf="signUpForm.get('email')?.errors?.['required']">Email is required.</div>
                 <div *ngIf="signUpForm.get('email')?.errors?.['email']">Please enter a valid email.</div>
+                <div *ngIf="signUpForm.get('email')?.errors?.['emailExists']">Email is already associated with another
+                    account.</div>
             </div>
         </div>
         <div class="mb-4">
@@ -35,12 +38,18 @@
                     long.</div>
                 <div *ngIf="signUpForm.get('password')?.errors?.['maxlength']">Password cannot be more than 20
                     characters long.</div>
+                <div *ngIf="signUpForm.get('password')?.errors?.['serverError']">An error occurred. Please try again
+                    later.</div>
             </div>
         </div>
         <div class="flex items-center justify-between">
-            <button type="submit"
-                class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                Sign Up
+            <button type="submit" [disabled]="isSigningUp"
+                class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                [ngClass]="{'opacity-50 cursor-not-allowed': isSigningUp}">
+                <span *ngIf="!isSigningUp">Sign Up</span>
+                <span *ngIf="isSigningUp"
+                    class="loader border-t-transparent border-solid border-white border-2 rounded-full w-4 h-4 inline-block animate-spin"></span>
+                <span *ngIf="isSigningUp">Signing up...</span>
             </button>
         </div>
     </form>
