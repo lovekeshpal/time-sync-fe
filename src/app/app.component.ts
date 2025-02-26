@@ -2,16 +2,18 @@ import { CommonModule } from '@angular/common';
 import { Component, HostBinding, inject, Inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { LocalStorageService } from './services/local-storage/local-storage.service';
+import { SideMenuComponent } from './components/side-menu/side-menu.component';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, SideMenuComponent],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'] // Corrected property name
+  styleUrls: ['./app.component.scss'], // Corrected property name
 })
 export class AppComponent implements OnInit {
-
   @HostBinding('class') className = '';
+
+  isSideMenuOpen: boolean = false;
 
   private localStorageService = inject(LocalStorageService);
   currentYear: number = new Date().getFullYear();
@@ -28,5 +30,13 @@ export class AppComponent implements OnInit {
     const darkMode = document.documentElement.classList.toggle('dark');
     this.className = darkMode ? 'dark' : '';
     this.localStorageService.setItem('theme', this.className);
+  }
+
+  toggleSideMenu() {
+    this.isSideMenuOpen = !this.isSideMenuOpen;
+  }
+
+  closeSideMenu() {
+    this.isSideMenuOpen = false;
   }
 }
