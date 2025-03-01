@@ -13,6 +13,7 @@ export class DashboardComponent {
   constructor(private router: Router) {}
 
   navigate() {
+    alert('Working');
     this.router.navigate(['/create-timer']);
   }
 }
