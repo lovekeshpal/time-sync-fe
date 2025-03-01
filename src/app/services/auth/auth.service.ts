@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../local-storage/local-storage.service';
+import { ROUTES, STORAGE_KEYS } from '../../constants';
 
 @Injectable({
   providedIn: 'root',
@@ -28,8 +29,13 @@ export class AuthService {
 
   logout(): void {
     // Clear the token
-    this.localStorageService.removeItem('token');
+    this.localStorageService.removeItem(STORAGE_KEYS.AUTH_TOKEN);
     // Navigate to login page
-    this.router.navigate(['/login']);
+    this.router.navigate([ROUTES.AUTH.LOGIN]);
   }
+
+  isAuthenticated(): boolean {
+    return !!this.localStorageService.getItem(STORAGE_KEYS.AUTH_TOKEN);
+  }
+
 }

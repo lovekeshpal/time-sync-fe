@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { ROUTES } from '../../constants';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,7 +14,6 @@ export class DashboardComponent {
   constructor(private router: Router) {}
 
   navigate() {
-    alert('Working');
-    this.router.navigate(['/create-timer']);
+    this.router.navigate([ROUTES.TIMER.CREATE]);
   }
 }

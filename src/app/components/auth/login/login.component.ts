@@ -6,11 +6,10 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { AuthService } from '../../services/auth/auth.service';
+import { AuthService } from '../../../services/auth/auth.service';
 import { Router } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
-import { LocalStorageService } from '../../services/local-storage/local-storage.service';
-import { STORAGE_KEYS } from '../../constants/storage-keys.constants';
+import { LocalStorageService } from '../../../services/local-storage/local-storage.service';
+import { STORAGE_KEYS } from '../../../constants/storage-keys.constants';
 
 @Component({
   selector: 'app-login',

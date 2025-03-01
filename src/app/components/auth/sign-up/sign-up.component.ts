@@ -6,9 +6,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { AuthService } from '../../services/auth/auth.service';
+import { AuthService } from '../../../services/auth/auth.service';
 import { Router } from '@angular/router';
-import { LocalStorageService } from '../../services/local-storage/local-storage.service';
+import { LocalStorageService } from '../../../services/local-storage/local-storage.service';
 
 /**
  * SignUpComponent is responsible for handling the sign-up form functionality.
