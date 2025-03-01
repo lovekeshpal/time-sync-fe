@@ -47,12 +47,37 @@ export class LoginComponent implements OnInit {
       ],
     });
 
-        // Clear error messages when user starts typing
-        this.formValueChangesSubscription = this.loginForm.valueChanges.subscribe(() => {
-          if (this.loginError) {
-            this.loginError = '';
+    // Clear error messages when user starts typing
+    this.formValueChangesSubscription = this.loginForm.valueChanges.subscribe(
+      () => {
+        if (this.loginError) {
+          this.loginError = '';
+
+          // Also clear the programmatically set validation errors
+          const emailOrUsernameControl = this.loginForm.get('emailOrUsername');
+          const passwordControl = this.loginForm.get('password');
+
+          if (emailOrUsernameControl?.hasError('invalidCredentials')) {
+            // Get current errors
+            const errors = { ...emailOrUsernameControl.errors };
+            // Remove the invalidCredentials error
+            delete errors['invalidCredentials'];
+            // Set the remaining errors back, or null if no errors remain
+            emailOrUsernameControl.setErrors(
+              Object.keys(errors).length ? errors : null
+            );
           }
-        });
+
+          if (passwordControl?.hasError('invalidCredentials')) {
+            const errors = { ...passwordControl.errors };
+            delete errors['invalidCredentials'];
+            passwordControl.setErrors(
+              Object.keys(errors).length ? errors : null
+            );
+          }
+        }
+      }
+    );
   }
 
   ngOnDestroy(): void {
