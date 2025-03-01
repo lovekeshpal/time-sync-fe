@@ -24,6 +24,9 @@
                     long.</div>
             </div>
         </div>
+        <div *ngIf="loginError" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {{ loginError }}
+        </div>
         <div class="flex items-center justify-between">
             <button type="submit" [disabled]="isLoggingIn"
                 class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
@@ -37,6 +40,6 @@
     </form>
     <p class="mt-4 text-center text-sm text-text dark:text-text-light">
         Don't have an account?
-        <a href="/signup" class="text-primary dark:text-primary-dark hover:underline">Register here</a>
+        <a href="/auth/signup" class="text-primary dark:text-primary-dark hover:underline">Register here</a>
     </p>
 </div>
