@@ -9,6 +9,7 @@ import {
 import { AuthService } from '../../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { LocalStorageService } from '../../../services/local-storage/local-storage.service';
+import { ROUTES, STORAGE_KEYS } from '../../../constants';
 
 /**
  * SignUpComponent is responsible for handling the sign-up form functionality.
@@ -76,8 +77,8 @@ export class SignUpComponent implements OnInit {
           // Handle successful sign-up, e.g., navigate to dashboard
           if (response.token) {
             try {
-              await this.localStorageService.setItem('token', response.token);
-              this.router.navigate(['/dashboard']);
+              await this.localStorageService.setItem(STORAGE_KEYS.AUTH_TOKEN, response.token);
+              this.router.navigate([ROUTES.DASHBOARD]);
             } catch (error) {
               console.error('Failed to set token in local storage', error);
             }
