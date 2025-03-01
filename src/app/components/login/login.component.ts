@@ -3,7 +3,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
-  MinValidator,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -11,10 +10,11 @@ import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { LocalStorageService } from '../../services/local-storage/local-storage.service';
+import { STORAGE_KEYS } from '../../constants/storage-keys.constants';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -59,7 +59,10 @@ export class LoginComponent implements OnInit {
           // Handle successful login, e.g., navigate to dashboard
           if (response.token) {
             try {
-              await this.localStorageService.setItem('token', response.token);
+              await this.localStorageService.setItem(
+                STORAGE_KEYS.AUTH_TOKEN,
+                response.token
+              );
               this.router.navigate(['/dashboard']);
             } catch (error) {
               console.error('Failed to set token in local storage', error);

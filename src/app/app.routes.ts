@@ -7,8 +7,8 @@ import { CreateTimerComponent } from './components/timer/create-timer/create-tim
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'signup', component: SignUpComponent },
-  { path: 'login', component: LoginComponent },
+  { path: 'auth/signup', component: SignUpComponent },
+  { path: 'auth/login', component: LoginComponent },
   {
     path: 'dashboard',
     component: DashboardComponent,
