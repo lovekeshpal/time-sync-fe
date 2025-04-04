@@ -1,0 +1,127 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-text dark:text-text-light">My Timers</h1>
+    <button
+      [routerLink]="routes.TIMER.CREATE"
+      class="px-4 py-2 rounded-md bg-primary hover:bg-primary-dark text-text-light font-medium flex items-center gap-2 transition duration-300 shadow-md"
+    >
+      <i class="bi bi-plus-circle"></i>
+      Create New Timer
+    </button>
+  </div>
+
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="flex justify-center items-center py-12">
+    <svg
+      class="animate-spin h-8 w-8 text-primary"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        class="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        stroke-width="4"
+      ></circle>
+      <path
+        class="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+      ></path>
+    </svg>
+  </div>
+
+  <!-- Error state -->
+  <div
+    *ngIf="error && !isLoading"
+    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6"
+  >
+    <p>{{ error }}</p>
+    <button (click)="loadTimers()" class="mt-2 text-primary hover:underline">
+      Try again
+    </button>
+  </div>
+
+  <!-- No timers state -->
+  <div
+    *ngIf="!isLoading && !error && timers.length === 0"
+    class="text-center py-12"
+  >
+    <div class="text-gray-500 text-xl mb-4">You don't have any timers yet</div>
+    <button
+      [routerLink]="routes.TIMER.CREATE"
+      class="px-4 py-2 rounded-md bg-primary hover:bg-primary-dark text-text-light font-medium transition duration-300"
+    >
+      Create Your First Timer
+    </button>
+  </div>
+
+  <!-- Timer list -->
+  <div
+    *ngIf="!isLoading && !error && timers.length > 0"
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+  >
+    <div
+      *ngFor="let timer of timers"
+      class="bg-bg-light dark:bg-bg-dark rounded-lg shadow-md overflow-hidden"
+    >
+      <div
+        [ngClass]="{
+          'bg-primary': timer.theme === 'default',
+          'bg-gray-800': timer.theme === 'dark',
+          'bg-gray-100': timer.theme === 'light'
+        }"
+        class="p-4 border-b"
+      >
+        <div class="flex justify-between items-center">
+          <h3
+            class="text-xl font-medium"
+            [ngClass]="{
+              'text-text-light': timer.theme !== 'light',
+              'text-text': timer.theme === 'light'
+            }"
+          >
+            {{ timer.name }}
+          </h3>
+          <span
+            *ngIf="timer.isPublic"
+            class="px-2 py-1 text-xs rounded-full bg-green-500 text-white"
+            >Public</span
+          >
+        </div>
+      </div>
+
+      <div class="p-4">
+        <p
+          *ngIf="timer.description"
+          class="text-sm text-text dark:text-text-light mb-4"
+        >
+          {{ timer.description }}
+        </p>
+        <div class="flex justify-between items-center">
+          <div class="text-text dark:text-text-light">
+            <span class="font-medium">Duration:</span>
+            {{ formatDuration(timer.duration) }}
+          </div>
+          <div class="flex space-x-2">
+            <button
+              [routerLink]="['/timer', timer.id]"
+              class="p-2 text-primary hover:text-primary-dark"
+            >
+              <i class="bi bi-play-fill"></i>
+            </button>
+            <button
+              [routerLink]="['/edit-timer', timer.id]"
+              class="p-2 text-primary hover:text-primary-dark"
+            >
+              <i class="bi bi-pencil-fill"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

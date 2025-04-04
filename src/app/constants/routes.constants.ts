@@ -5,6 +5,7 @@ export const ROUTES = {
     FORGOT_PASSWORD: '/auth/forgot-password',
   },
   DASHBOARD: '/dashboard',
+  TIMERS: '/timers',
   PROFILE: '/profile',
   SETTINGS: '/settings',
   TIMER: {

@@ -13,17 +13,27 @@ import { AuthService } from '../../services/auth/auth.service';
   styleUrl: './side-menu.component.scss',
 })
 export class SideMenuComponent {
-
-  private localStorageService = inject(LocalStorageService); 
-  private authService = inject(AuthService); 
+  private localStorageService = inject(LocalStorageService);
+  private authService = inject(AuthService);
 
   @Input() isOpen: boolean = false;
   @Output() closeMenu = new EventEmitter<void>();
 
-  constructor(private router: Router){}
+  constructor(private router: Router) {}
 
   menuItems = [
-    { name: UI_CONSTANTS.MENU.DASHBOARD, route: ROUTES.DASHBOARD, icon: 'bi-speedometer2', requiresAuth: true },
+    {
+      name: UI_CONSTANTS.MENU.DASHBOARD,
+      route: ROUTES.DASHBOARD,
+      icon: 'bi-speedometer2',
+      requiresAuth: true,
+    },
+    {
+      name: UI_CONSTANTS.MENU.TIMERS,
+      route: ROUTES.TIMERS,
+      icon: 'bi-stopwatch',
+      requiresAuth: true,
+    },
   ];
 
   closeMenuHandler(): void {
