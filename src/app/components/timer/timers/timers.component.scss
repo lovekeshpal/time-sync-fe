@@ -32,6 +32,13 @@
     }
 }
 
+.milliseconds {
+    font-size: 0.75em;
+    opacity: 0.8;
+    display: inline-block;
+    min-width: 3ch;
+}
+
 .action-button {
     transition: transform 0.15s ease-in-out;
 
