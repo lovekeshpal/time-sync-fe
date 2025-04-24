@@ -1,9 +1,34 @@
 .timer-card {
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); // Light mode shadow
 
     &:hover {
         transform: translateY(-3px);
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    // Dark mode specific enhancements
+    :host-context(.dark) &,
+    .dark & {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        }
+    }
+}
+
+
+.countdown-display {
+    // Light mode styles
+    background-color: #f3f4f6; // gray-100
+    border: 1px solid rgba(229, 231, 235, 0.7); // light gray border for light mode
+
+    // Dark mode specific enhancements - using the same approach as your timer-card
+    :host-context(.dark) &,
+    .dark & {
+        background-color: rgba(31, 41, 55, 0.8); // Slightly lighter than gray-900
+        border: 1px solid rgba(75, 85, 99, 0.5); // gray-600 with opacity
     }
 }
 
@@ -22,4 +47,43 @@
 .visibility-badge {
     font-weight: 500;
     letter-spacing: 0.025em;
+}
+
+.action-button.text-red-500:hover {
+    color: #ef4444; // Tailwind's red-500
+}
+
+.action-button.text-red-500:active {
+    transform: scale(0.95);
+}
+
+/* Modal animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.fixed.inset-0 {
+    animation: fadeIn 0.2s ease-out;
+}
+
+.fixed.inset-0>div {
+    animation: slideIn 0.3s ease-out;
 }
