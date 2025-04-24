@@ -66,15 +66,15 @@
   >
     <div
       *ngFor="let timer of timers"
-      class="bg-bg-light dark:bg-bg-dark rounded-lg shadow-md overflow-hidden"
+      class="timer-card bg-bg-light dark:bg-bg-dark rounded-lg shadow-md overflow-hidden"
     >
       <div
+        class="p-4 border-b"
         [ngClass]="{
           'bg-primary': timer.theme === 'default',
           'bg-gray-800': timer.theme === 'dark',
           'bg-gray-100': timer.theme === 'light'
         }"
-        class="p-4 border-b"
       >
         <div class="flex justify-between items-center">
           <h3
@@ -88,8 +88,13 @@
           </h3>
           <span
             *ngIf="timer.isPublic"
-            class="px-2 py-1 text-xs rounded-full bg-green-500 text-white"
+            class="visibility-badge px-2 py-1 text-xs rounded-full bg-green-500 text-white"
             >Public</span
+          >
+          <span
+            *ngIf="!timer.isPublic"
+            class="visibility-badge px-2 py-1 text-xs rounded-full bg-gray-500 text-white"
+            >Private</span
           >
         </div>
       </div>
@@ -106,18 +111,27 @@
             <span class="font-medium">Duration:</span>
             {{ formatDuration(timer.duration) }}
           </div>
-          <div class="flex space-x-2">
+          <div class="timer-actions flex space-x-2">
             <button
-              [routerLink]="['/timer', timer.id]"
-              class="p-2 text-primary hover:text-primary-dark"
+              [routerLink]="['/timer', timer._id]"
+              class="action-button p-2 text-primary hover:text-primary-dark"
+              title="Start Timer"
             >
               <i class="bi bi-play-fill"></i>
             </button>
             <button
-              [routerLink]="['/edit-timer', timer.id]"
-              class="p-2 text-primary hover:text-primary-dark"
+              [routerLink]="['/edit-timer', timer._id]"
+              class="action-button p-2 text-primary hover:text-primary-dark"
+              title="Edit Timer"
             >
               <i class="bi bi-pencil-fill"></i>
+            </button>
+            <button
+              (click)="shareTimer(timer)"
+              class="action-button p-2 text-primary hover:text-primary-dark"
+              title="Share Timer"
+            >
+              <i class="bi bi-share-fill"></i>
             </button>
           </div>
         </div>

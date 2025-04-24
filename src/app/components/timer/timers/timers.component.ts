@@ -7,17 +7,20 @@ import { STORAGE_KEYS } from '../../../constants/storage-keys.constants';
 import { ROUTES } from '../../../constants/routes.constants';
 import { environment } from '../../../../environment';
 
-// Define Timer interface directly in component
 interface Timer {
-  id: string;
+  _id: string;
   name: string;
-  description?: string;
+  description: string;
+  creator: string;
   duration: number;
+  isRunning: boolean;
   isPublic: boolean;
-  showMilliseconds: boolean;
   theme: string;
+  showMilliseconds: boolean;
+  startTime: string | null;
+  pausedAt: number;
+  shareId: string;
   createdAt: string;
-  userId: string;
 }
 
 @Component({
@@ -53,7 +56,7 @@ export class TimersComponent {
     });
 
     this.http
-      .get<Timer[]>(`${environment.apiUrl}/api/timer`, { headers })
+      .get<Timer[]>(`${environment.apiUrl}/api/timer/list`, { headers })
       .subscribe({
         next: (data) => {
           this.timers = data;
@@ -67,19 +70,49 @@ export class TimersComponent {
       });
   }
 
-  // Helper method to format duration from seconds to human-readable format
+  // Format duration from seconds to human-readable format
   formatDuration(durationInSeconds: number): string {
     const days = Math.floor(durationInSeconds / (24 * 60 * 60));
     const hours = Math.floor((durationInSeconds % (24 * 60 * 60)) / (60 * 60));
     const minutes = Math.floor((durationInSeconds % (60 * 60)) / 60);
     const seconds = durationInSeconds % 60;
 
-    let result = '';
-    if (days > 0) result += `${days}d `;
-    if (hours > 0) result += `${hours}h `;
-    if (minutes > 0) result += `${minutes}m `;
-    if (seconds > 0) result += `${seconds}s`;
+    const parts: string[] = [];
 
-    return result.trim() || '0s';
+    if (days > 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
+    if (hours > 0) parts.push(`${hours} hour${hours !== 1 ? 's' : ''}`);
+    if (minutes > 0) parts.push(`${minutes} minute${minutes !== 1 ? 's' : ''}`);
+    if (seconds > 0) parts.push(`${seconds} second${seconds !== 1 ? 's' : ''}`);
+
+    if (parts.length === 0) return '0 seconds';
+
+    return parts.join(', ');
+  }
+
+  shareTimer(timer: Timer): void {
+    // Base URL for sharing
+    const shareUrl = `${window.location.origin}/shared-timer/${timer.shareId}`;
+
+    // Check if Web Share API is available
+    if (navigator.share) {
+      navigator
+        .share({
+          title: `${timer.name} - Timer`,
+          text: `Check out this timer: ${timer.name}`,
+          url: shareUrl,
+        })
+        .catch((error) => console.error('Error sharing:', error));
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard
+        .writeText(shareUrl)
+        .then(() => {
+          // You might want to show a toast notification here
+          alert('Share link copied to clipboard!');
+        })
+        .catch((err) => {
+          console.error('Failed to copy: ', err);
+        });
+    }
   }
 }
