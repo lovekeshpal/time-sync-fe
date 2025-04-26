@@ -84,7 +84,7 @@ export class TimersComponent {
     // Subscribe to explicit timer state changes
     this.subscriptions.push(
       this.wsService.onTimerStateChange().subscribe((stateChange) => {
-        console.log('Timer state changed:', stateChange);
+        // console.log('Timer state changed:', stateChange);
 
         if (!stateChange || !stateChange._id) {
           return;

@@ -164,7 +164,7 @@ export class WebSocketService {
   public onTimerStateChange(): Observable<any> {
     return this.onMessage('timerUpdate').pipe(
       map((data) => {
-        console.log('Timer update received via WebSocket:', data);
+        // console.log('Timer update received via WebSocket:', data);
         return data;
       })
     );

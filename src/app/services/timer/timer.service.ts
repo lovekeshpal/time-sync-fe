@@ -47,7 +47,7 @@ export class TimerService {
   private setupWebSocketListeners() {
     // Listen for individual timer updates
     this.wsService.onMessage<any>('timerUpdate').subscribe((data) => {
-      console.log('Timer update received:', data);
+      // console.log('Timer update received:', data);
 
       // Check if we have a single timer or array
       if (Array.isArray(data)) {
