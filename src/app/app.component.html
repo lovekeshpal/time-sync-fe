@@ -1,23 +1,38 @@
 <div class="flex flex-col min-h-screen bg-bg-light dark:bg-bg-dark">
-    <header
-        class="p-4 flex justify-between items-center border-b border-gray-300 dark:border-gray-700 bg-bg-light dark:bg-bg-dark text-text-light dark:text-text">
-        <div class="flex items-center">
-            <button (click)="toggleSideMenu()" class="mr-3 text-text dark:text-text-light">
-                <i class="bi bi-list text-xl"></i>
-            </button>
-            <h1 class="text-l sm:text-l md:text-xl lg:text-2xl text-text dark:text-text-light">Time Sync</h1>
-        </div>
-        <button (click)="toggleTheme()" class="text-text dark:text-text-light">
-            <i class="bi bi-moon-fill dark:hidden text-text dark:text-text-light"></i>
-            <i class="bi bi-sun-fill hidden dark:inline text-text dark:text-text-light"></i>
-        </button>
-    </header>
-    <app-side-menu [isOpen]="isSideMenuOpen" (closeMenu)="closeSideMenu()"></app-side-menu>
-    <main class="flex-grow p-4 sm:p-6 md:p-8 lg:p-10">
-        <router-outlet></router-outlet>
-    </main>
-    <footer
-        class="text-l p-1 sm:p-1 md:p-2 lg:p-4 text-center border-t border-gray-300 bg-bg-light dark:bg-bg-dark dark:border-gray-700 text-text dark:text-text-light">
-        &copy; Time Sync {{ currentYear }}
-    </footer>
+  <header
+    *ngIf="showHeader"
+    class="p-4 flex justify-between items-center border-b border-gray-300 dark:border-gray-700 bg-bg-light dark:bg-bg-dark text-text-light dark:text-text"
+  >
+    <div class="flex items-center">
+      <button
+        (click)="toggleSideMenu()"
+        class="mr-3 text-text dark:text-text-light"
+      >
+        <i class="bi bi-list text-xl"></i>
+      </button>
+      <h1
+        class="text-l sm:text-l md:text-xl lg:text-2xl text-text dark:text-text-light"
+      >
+        Time Sync
+      </h1>
+    </div>
+    <button (click)="toggleTheme()" class="text-text dark:text-text-light">
+      <i class="bi bi-moon-fill dark:hidden text-text dark:text-text-light"></i>
+      <i
+        class="bi bi-sun-fill hidden dark:inline text-text dark:text-text-light"
+      ></i>
+    </button>
+  </header>
+  <app-side-menu
+    [isOpen]="isSideMenuOpen"
+    (closeMenu)="closeSideMenu()"
+  ></app-side-menu>
+  <main class="flex-grow p-4 sm:p-6 md:p-8 lg:p-10">
+    <router-outlet></router-outlet>
+  </main>
+  <footer
+    class="text-l p-1 sm:p-1 md:p-2 lg:p-4 text-center border-t border-gray-300 bg-bg-light dark:bg-bg-dark dark:border-gray-700 text-text dark:text-text-light"
+  >
+    &copy; Time Sync {{ currentYear }}
+  </footer>
 </div>

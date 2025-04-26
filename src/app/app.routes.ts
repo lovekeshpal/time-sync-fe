@@ -5,6 +5,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AuthGuard } from './guards/auth/auth.guard';
 import { CreateTimerComponent } from './components/timer/create-timer/create-timer.component';
 import { TimersComponent } from './components/timer/timers/timers.component';
+import { TimerScreenComponent } from './components/timer/timer-screen/timer-screen.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -24,5 +25,9 @@ export const routes: Routes = [
     path: 'create-timer',
     component: CreateTimerComponent,
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'timer-screen/:id',
+    component: TimerScreenComponent,
   },
 ];

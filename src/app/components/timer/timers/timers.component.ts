@@ -363,7 +363,7 @@ export class TimersComponent {
     event.preventDefault();
     event.stopPropagation();
 
-    const shareUrl = `${window.location.origin}/shared-timer/${timer.shareId}`;
+    const shareUrl = `${window.location.origin}/timer-screen/${timer.shareId}`;
 
     // Check if Web Share API is available (modern mobile browsers)
     if (navigator.share) {
