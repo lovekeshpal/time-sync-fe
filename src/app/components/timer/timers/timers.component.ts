@@ -46,11 +46,28 @@ export class TimersComponent {
       })
     );
 
-    // Subscribe to real-time timer updates from the service
     this.subscriptions.push(
-      this.timerService.getTimersObservable().subscribe((timers) => {
-        if (timers.length > 0) {
-          this.timers = timers;
+      this.timerService.getTimersObservable().subscribe((newTimers) => {
+        if (newTimers.length > 0) {
+          // Update individual timers without replacing array reference
+          newTimers.forEach((newTimer) => {
+            const index = this.timers.findIndex((t) => t._id === newTimer._id);
+            if (index !== -1) {
+              // Update existing timer properties while preserving reference
+              Object.assign(this.timers[index], newTimer);
+            } else {
+              // Add new timer if it doesn't exist
+              this.timers.push(newTimer);
+            }
+          });
+
+          // Remove timers that no longer exist
+          for (let i = this.timers.length - 1; i >= 0; i--) {
+            const timer = this.timers[i];
+            if (!newTimers.some((newTimer) => newTimer._id === timer._id)) {
+              this.timers.splice(i, 1);
+            }
+          }
         }
       })
     );
@@ -62,19 +79,33 @@ export class TimersComponent {
     this.startMillisecondCounter();
 
     // Start server resync for consistency across clients
-    // this.startServerResync();
+    this.startServerResync();
 
     // Subscribe to explicit timer state changes
     this.subscriptions.push(
       this.wsService.onTimerStateChange().subscribe((stateChange) => {
         console.log('Timer state changed:', stateChange);
 
-        // Force a refresh of all timers to ensure consistency
-        this.loadTimers();
+        if (!stateChange || !stateChange._id) {
+          return;
+        }
+
+        // Find the timer to update
+        const index = this.timers.findIndex((t) => t._id === stateChange._id);
+
+        if (index !== -1) {
+          // Process the timer to calculate correct duration
+          const processedTimer = this.processTimerData(stateChange);
+
+          // Update properties in place
+          Object.assign(this.timers[index], processedTimer);
+        } else {
+          // This is a new timer
+          this.timers.push(this.processTimerData(stateChange));
+        }
       })
     );
 
-    // Add this to your ngOnInit
     this.subscriptions.push(
       this.wsService.onTimerPaused().subscribe((timerId) => {
         console.log('Timer paused event received for:', timerId);
@@ -82,16 +113,14 @@ export class TimersComponent {
         // Find and pause this timer immediately
         const index = this.timers.findIndex((t) => t._id === timerId);
         if (index !== -1 && this.timers[index].isRunning) {
-          this.timers[index] = {
-            ...this.timers[index],
-            isRunning: false,
-          };
+          // Update properties directly instead of creating a new object
+          this.timers[index].isRunning = false;
 
           // Reset milliseconds
           this.milliseconds[timerId] = 0;
 
-          // Force update
-          this.timers = [...this.timers];
+          // Remove this line that forces a re-render:
+          // this.timers = [...this.timers];
         }
       })
     );
@@ -116,39 +145,40 @@ export class TimersComponent {
 
     this.timerService.getAllTimers().subscribe({
       next: (data) => {
-        // Process timers to calculate correct initial durations
-        this.timers = data.map((timer) => {
-          // Store original duration for future calculations
-          const originalDuration = timer.duration;
+        if (this.timers.length === 0) {
+          // Only create a new array when we have no timers (first load)
+          this.timers = data.map((timer) => this.processTimerData(timer));
+        } else {
+          // Update existing timers or add new ones without replacing array
+          const currentIds = this.timers.map((t) => t._id);
 
-          // For running timers, calculate the correct remaining time
-          if (timer.isRunning) {
-            const startTime = timer.startTime
-              ? new Date(timer.startTime).getTime()
-              : 0;
-            const now = new Date().getTime();
-            const elapsedSinceStart = Math.floor((now - startTime) / 1000);
-            const totalElapsed = timer.pausedAt + elapsedSinceStart;
+          // Process each timer from the server
+          data.forEach((serverTimer) => {
+            const existingIndex = this.timers.findIndex(
+              (t) => t._id === serverTimer._id
+            );
+            const processedTimer = this.processTimerData(serverTimer);
 
-            return {
-              ...timer,
-              // Store original duration
-              originalDuration: originalDuration,
-              // Update remaining time
-              duration: Math.max(0, originalDuration - totalElapsed),
-            };
+            if (existingIndex !== -1) {
+              // Update existing timer in place
+              Object.assign(this.timers[existingIndex], processedTimer);
+            } else {
+              // Add new timer
+              this.timers.push(processedTimer);
+            }
+          });
+
+          // Remove timers that no longer exist on the server
+          for (let i = this.timers.length - 1; i >= 0; i--) {
+            if (
+              !data.some(
+                (serverTimer) => serverTimer._id === this.timers[i]._id
+              )
+            ) {
+              this.timers.splice(i, 1);
+            }
           }
-          // For paused timers, subtract the pausedAt value
-          else {
-            return {
-              ...timer,
-              // Store original duration
-              originalDuration: originalDuration,
-              // Update remaining time
-              duration: Math.max(0, originalDuration - timer.pausedAt),
-            };
-          }
-        });
+        }
 
         this.isLoading = false;
       },
@@ -158,6 +188,32 @@ export class TimersComponent {
         this.isLoading = false;
       },
     });
+  }
+
+  // Helper method to process timer data
+  private processTimerData(timer: Timer): Timer {
+    const originalDuration = timer.duration;
+
+    if (timer.isRunning) {
+      const startTime = timer.startTime
+        ? new Date(timer.startTime).getTime()
+        : 0;
+      const now = new Date().getTime();
+      const elapsedSinceStart = Math.floor((now - startTime) / 1000);
+      const totalElapsed = timer.pausedAt + elapsedSinceStart;
+
+      return {
+        ...timer,
+        originalDuration: originalDuration,
+        duration: Math.max(0, originalDuration - totalElapsed),
+      };
+    } else {
+      return {
+        ...timer,
+        originalDuration: originalDuration,
+        duration: Math.max(0, originalDuration - timer.pausedAt),
+      };
+    }
   }
 
   startTimer(timer: Timer, event: Event): void {
@@ -257,23 +313,21 @@ export class TimersComponent {
         return; // Skip updates if no timers are running
       }
 
-      this.timers = this.timers.map((timer) => {
+      // Update timer properties in place without creating new objects
+      this.timers.forEach((timer) => {
         if (timer.isRunning) {
-          // Simply decrement the current duration by 1 second
-          const newDuration = Math.max(0, timer.duration - 1);
+          // Decrement duration directly
+          timer.duration = Math.max(0, timer.duration - 1);
 
-          return {
-            ...timer,
-            duration: newDuration,
-            // Stop the timer if it reaches zero
-            isRunning: newDuration > 0 ? true : false,
-          };
+          // Stop the timer if it reaches zero
+          if (timer.duration === 0) {
+            timer.isRunning = false;
+          }
         }
-        return timer;
       });
 
-      // Force change detection
-      this.timers = [...this.timers];
+      // No need for this line that forces a re-render:
+      // this.timers = [...this.timers];
     }, 1000);
   }
 
@@ -394,21 +448,21 @@ export class TimersComponent {
     }, 100); // Update 10 times per second for smooth display
   }
 
-  // /**
-  //  * Periodically resync running timers with the server
-  //  */
-  // private startServerResync(): void {
-  //   // More frequent resyncs for better real-time experience
-  //   const RESYNC_INTERVAL = 1000; // Every second
+  /**
+   * Periodically resync running timers with the server
+   */
+  private startServerResync(): void {
+    // More frequent resyncs for better real-time experience
+    const RESYNC_INTERVAL = 1000; // Every second
 
-  //   this.subscriptions.push(
-  //     interval(RESYNC_INTERVAL).subscribe(() => {
-  //       // Only resync if we have timers and are connected
-  //       if (this.timers.length > 0 && this.isWebSocketConnected) {
-  //         // Request latest timer states
-  //         this.wsService.requestTimerUpdates();
-  //       }
-  //     })
-  //   );
-  // }
+    this.subscriptions.push(
+      interval(RESYNC_INTERVAL).subscribe(() => {
+        // Only resync if we have timers and are connected
+        if (this.timers.length > 0 && this.isWebSocketConnected) {
+          // Request latest timer states
+          this.wsService.requestTimerUpdates();
+        }
+      })
+    );
+  }
 }

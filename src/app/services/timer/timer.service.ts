@@ -18,6 +18,7 @@ export interface Timer {
   pausedAt: number;
   shareId: string;
   createdAt: string;
+  originalDuration?: number;
 }
 
 export interface CreateTimerRequest {
