@@ -1,0 +1,139 @@
+<div
+  class="timer-screen min-h-screen flex flex-col items-center justify-center bg-bg-light dark:bg-bg-dark"
+>
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="flex justify-center items-center">
+    <svg
+      class="animate-spin h-12 w-12 text-primary"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        class="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        stroke-width="4"
+      ></circle>
+      <path
+        class="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+      ></path>
+    </svg>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error && !isLoading" class="text-red-600 p-4 text-center">
+    <p>{{ error }}</p>
+    <button (click)="fetchTimerData()" class="mt-2 text-primary underline">
+      Try again
+    </button>
+  </div>
+
+  <!-- Timer display -->
+  <div *ngIf="timer && !isLoading" class="w-full max-w-4xl px-4">
+    <!-- Connection status -->
+    <div class="text-center mb-4">
+      <span
+        *ngIf="isWebSocketConnected"
+        class="text-green-500 text-sm flex items-center justify-center"
+      >
+        <span
+          class="h-2 w-2 bg-green-500 rounded-full animate-pulse mr-2"
+        ></span>
+        Live updates
+      </span>
+      <span
+        *ngIf="!isWebSocketConnected"
+        class="text-red-500 text-sm flex items-center justify-center"
+      >
+        <span class="h-2 w-2 bg-red-500 rounded-full mr-2"></span>
+        Offline mode
+      </span>
+    </div>
+
+    <!-- Timer card -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden">
+      <!-- Timer header -->
+      <div
+        class="p-6 border-b border-gray-200 dark:border-gray-700"
+        [ngClass]="{
+          'bg-primary text-white': timer.theme === 'default',
+          'bg-gray-800 text-white': timer.theme === 'dark',
+          'bg-gray-100 text-gray-900': timer.theme === 'light'
+        }"
+      >
+        <h1 class="text-3xl md:text-4xl font-bold text-center">
+          {{ timer.name }}
+        </h1>
+      </div>
+
+      <!-- Timer body -->
+      <div class="p-6">
+        <p
+          *ngIf="timer.description"
+          class="text-center text-gray-600 dark:text-gray-300 mb-8"
+        >
+          {{ timer.description }}
+        </p>
+
+        <!-- Countdown display -->
+        <div
+          class="grid grid-cols-4 gap-4 p-8 bg-gray-50 dark:bg-gray-700 rounded-lg text-center"
+        >
+          <div class="flex flex-col">
+            <span class="text-4xl md:text-6xl font-bold text-primary">{{
+              getDays(timer.duration)
+            }}</span>
+            <span class="text-gray-600 dark:text-gray-300">Days</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-4xl md:text-6xl font-bold text-primary">{{
+              getHours(timer.duration)
+            }}</span>
+            <span class="text-gray-600 dark:text-gray-300">Hours</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-4xl md:text-6xl font-bold text-primary">{{
+              getMinutes(timer.duration)
+            }}</span>
+            <span class="text-gray-600 dark:text-gray-300">Minutes</span>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-4xl md:text-6xl font-bold text-primary">{{
+              getSeconds(timer.duration)
+            }}</span>
+            <span class="text-gray-600 dark:text-gray-300">Seconds</span>
+          </div>
+        </div>
+
+        <!-- Milliseconds (if enabled) -->
+        <div *ngIf="timer.showMilliseconds" class="text-center mt-2">
+          <span class="text-2xl font-mono text-primary">{{
+            getMilliseconds()
+          }}</span>
+          <span class="text-gray-600 dark:text-gray-300">ms</span>
+        </div>
+
+        <!-- Timer status -->
+        <div class="mt-6 text-center">
+          <span
+            *ngIf="timer.isRunning"
+            class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full"
+          >
+            Running
+          </span>
+          <span
+            *ngIf="!timer.isRunning"
+            class="inline-block px-3 py-1 bg-red-100 text-red-800 rounded-full"
+          >
+            Paused
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -169,4 +169,14 @@ export class WebSocketService {
       })
     );
   }
+
+  /**
+   * Unsubscribe from a specific timer
+   */
+  public unsubscribeFromTimer(timerId: string): void {
+    if (this.socket && this.connectedSubject.value) {
+      this.socket.emit('unsubscribeFromTimer', { timerId });
+      console.log('Unsubscribed from timer:', timerId);
+    }
+  }
 }

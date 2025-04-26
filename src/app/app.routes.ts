@@ -29,5 +29,6 @@ export const routes: Routes = [
   {
     path: 'timer-screen/:id',
     component: TimerScreenComponent,
+    canActivate: [AuthGuard],
   },
 ];
